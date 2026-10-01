@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff7fa">
+<title>你的恋爱人格是什么？</title>
+<style>
+:root{
+  --paper:#fff7fa;--ink:#191417;--muted:#8f7e86;--rose:#b9405a;
+  --dark:#170f12;--dark2:#21171b;--line:#49373d;--pink:#ee9eb2
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit}
+.app{max-width:780px;margin:0 auto;min-height:100vh;background:var(--paper)}
+.top{
+  height:76px;background:#fff;border-bottom:1px solid #eee7ea;display:flex;align-items:center;justify-content:center;
+  position:sticky;top:0;z-index:30
+}
+.top-title{font-size:19px;font-weight:500}
+.top-left,.top-right{position:absolute;height:76px;top:0;border:0;background:transparent;display:flex;align-items:center;cursor:pointer;color:#272127}
+.top-left{left:14px;font-size:30px;padding:0 10px}.top-right{right:14px;font-size:17px;letter-spacing:.12em}
+.quiz{padding:22px 52px 80px;min-height:calc(100vh - 76px)}
+.progress{height:6px;background:#eadfe5;border-radius:99px;overflow:hidden}.progress i{height:100%;display:block;width:0;background:var(--rose);transition:width .2s}
+.meta{display:flex;justify-content:space-between;margin-top:27px;color:#887881;font-family:Georgia,"Times New Roman",serif;font-size:13px;letter-spacing:.09em}
+.question{
+  margin:72px 0 62px;font-family:"Songti SC","STSong","Noto Serif CJK SC","Source Han Serif SC",serif;
+  font-size:28px;line-height:1.62;font-weight:700;letter-spacing:.015em
+}
+.answer-wrap{min-height:255px}
+.scale{padding:0 4px}.scale-line{height:2px;background:#e2cfd7}.points{display:grid;grid-template-columns:repeat(5,1fr);position:relative;top:-23px}
+.point{width:49px;height:49px;border-radius:50%;border:3px solid #d2ced0;background:#fff;justify-self:center;cursor:pointer;transition:.15s}
+.point.mid{width:41px;height:41px;margin-top:4px}.point:hover{transform:scale(1.04)}
+.point.active{border-color:var(--rose);background:#fff3f6;box-shadow:0 0 0 6px rgba(185,64,90,.08)}
+.scale-labels{display:flex;justify-content:space-between;margin-top:13px;font-size:16px;color:#988990}.scale-labels strong{color:var(--rose)}
+.choices{display:grid;gap:12px}
+.choice{width:100%;text-align:left;border:1px solid #ded3d8;background:rgba(255,255,255,.86);padding:16px 17px;border-radius:14px;cursor:pointer;transition:.15s}
+.choice:hover{transform:translateY(-1px);border-color:#c6b5bd}.choice.active{border-color:var(--rose);background:#fff0f3}
+.choice .lead{font-weight:700;font-size:15px;margin-bottom:5px}.choice .desc{font-size:13px;color:#83757d;line-height:1.55}
+.nav{display:grid;grid-template-columns:120px 1fr;gap:10px;margin-top:34px}.nav button{height:66px;cursor:pointer}
+.prev{border:1px solid #d8cbd0;background:#fff;color:#584951;font-size:18px;font-weight:700}.prev:disabled{opacity:.35}
+.next{border:0;background:#1d1518;color:#fff;font-size:20px;font-weight:700}.next:disabled{opacity:.38;cursor:not-allowed}
+.hint{text-align:center;color:#a08f97;font-size:12px;margin-top:13px}
+
+.result{min-height:calc(100vh - 76px);background:var(--dark);color:#f8f0f2;padding:42px 34px 100px}
+.result-inner{max-width:690px;margin:0 auto}
+.kicker{text-align:center;color:#d28fa0;font-family:Georgia,serif;font-size:14px;letter-spacing:.22em}
+.result-title{text-align:center;font-family:"Songti SC","STSong","Noto Serif CJK SC",serif;font-size:43px;line-height:1.25;margin:15px 0 32px}
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.type-card{background:#21171b;border:1px solid #513f45;padding:26px 20px;min-height:205px;text-align:center}
+.type-card.main{background:#51232e;border-color:#a35e70}.type-card small{display:block;color:#aa9ca2;font-size:12px;margin-bottom:22px}.type-card.main small{color:#e1abb7}
+.type-card h2{font-family:"Songti SC","STSong","Noto Serif CJK SC",serif;font-size:30px;margin:0 0 9px}.type-card.main h2{color:#f2a1b5}
+.type-score{font-size:22px;color:#cbbfc4}.type-gap{text-align:center;color:#aca0a5;font-size:15px;margin:24px 0 44px}
+.hr{height:1px;background:#34262b;margin:0 0 34px}.section-title{font-size:22px;color:#ef9fb3;margin:0 0 6px}.section-sub{color:#93878d;font-size:14px;margin-bottom:18px}
+.radar-wrap{display:flex;justify-content:center}.radar{width:100%;max-width:635px;height:auto}
+.r-grid{fill:none;stroke:#57474d;stroke-width:1}.r-axis{stroke:#49393f;stroke-width:1}.r-area{fill:rgba(219,88,114,.20);stroke:#dc6682;stroke-width:3}
+.r-label{fill:#f0e5e8;font-size:13px;font-weight:700}.r-value{fill:#efa0b4;font-size:13px;font-weight:800}
+.top3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0 40px}
+.top3 .item{background:#21171b;border:1px solid #48363c;padding:14px 10px;text-align:center}.top3 span{display:block;color:#96888e;font-size:11px;margin-bottom:6px}.top3 b{font-size:15px}.top3 em{display:block;color:#eda0b4;font-style:normal;font-size:13px;margin-top:6px}
+.detail{border-top:1px solid #33252a;padding:22px 0}.d-head{display:flex;justify-content:space-between;align-items:end}.d-head h3{margin:0;font-size:19px}.d-score{font-size:26px;font-weight:800}
+.d-bar{height:8px;background:#2a2024;border-radius:99px;overflow:hidden;margin:11px 0 12px}.d-bar i{height:100%;display:block;background:linear-gradient(90deg,#b8afb3,#efa0b4)}
+.detail p{margin:0;color:#b9adb2;line-height:1.85;font-size:14px}
+.profile{margin-top:28px;background:#21171b;border:1px solid #4a383e;padding:24px}.profile h3{margin:0;color:#ee9fb3;font-size:19px}.profile p{margin:10px 0 0;color:#c9bdc2;line-height:1.9;font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.tag{border:1px solid #5c454c;border-radius:999px;padding:7px 10px;color:#dccdd2;font-size:12px}
+.insight{margin-top:28px;border:1px solid #49373d;background:#21171b}.insight-row{display:grid;grid-template-columns:110px 1fr;border-bottom:1px solid #34262b}.insight-row:last-child{border-bottom:0}.insight-row .k{padding:14px;color:#9d9095;font-size:12px}.insight-row .v{padding:14px;color:#d7cbd0;font-size:13px;line-height:1.65}
+.share{margin-top:30px;padding:23px;background:#21171b;border:1px solid #49373d;text-align:center}.share-title{font-size:20px;font-weight:800;color:#ee9fb3;margin-bottom:8px}.share-text{font-size:13px;line-height:1.8;color:#c8bdc2}
+.actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1;height:50px;background:transparent;border:1px solid #5b434a;color:#f2eaed;cursor:pointer}
+.foot{text-align:center;color:#766a70;font-size:11px;line-height:1.7;margin-top:25px}
+.hidden{display:none!important}
+@media(max-width:600px){
+  .quiz{padding-left:27px;padding-right:27px}.question{font-size:25px;margin-top:56px}
+  .result{padding-left:18px;padding-right:18px}.result-title{font-size:36px}.type-grid{gap:10px}.type-card{padding:22px 11px;min-height:185px}.type-card h2{font-size:26px}
+  .top3{gap:7px}.top3 .item{padding:12px 6px}.top3 b{font-size:14px}.insight-row{grid-template-columns:84px 1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <button class="top-left" id="topBack" aria-label="返回">‹</button>
+  <div class="top-title">恋爱人格测试</div>
+  <button class="top-right" aria-label="菜单">•••</button>
+</header>
+
+<section class="quiz" id="quizView">
+  <div class="progress"><i id="progressFill"></i></div>
+  <div class="meta"><span id="metaQ">QUESTION 1</span><span id="metaN">1 / 35</span></div>
+  <div class="question" id="question"></div>
+  <div class="answer-wrap" id="answerArea"></div>
+  <div class="nav">
+    <button class="prev" id="prevBtn" disabled>上一题</button>
+    <button class="next" id="nextBtn" disabled>下一题</button>
+  </div>
+  <div class="hint">没有正确答案，凭第一反应选择就好。</div>
+</section>
+
+<section class="result hidden" id="resultView">
+<div class="result-inner">
+  <div class="kicker">YOUR LOVE PERSONALITY</div>
+  <div class="result-title">你的恋爱人格是什么？</div>
+
+  <div class="type-grid">
+    <div class="type-card main">
+      <small>你的核心恋爱人格</small>
+      <h2 id="mainType">—</h2>
+      <div class="type-score" id="mainScore">0分</div>
+    </div>
+    <div class="type-card">
+      <small>你的隐藏副人格</small>
+      <h2 id="secondType">—</h2>
+      <div class="type-score" id="secondScore">0分</div>
+    </div>
+  </div>
+  <div class="type-gap" id="typeGap">—</div>
+
+  <div class="hr"></div>
+  <h2 class="section-title">十四维恋爱人格雷达</h2>
+  <div class="section-sub">你真正的恋爱模式，往往藏在这些维度的组合里。</div>
+  <div class="radar-wrap"><svg class="radar" id="radar" viewBox="0 0 640 640"></svg></div>
+  <div class="top3" id="top3"></div>
+
+  <div class="hr"></div>
+  <h2 class="section-title">14维详细评分</h2>
+  <div class="section-sub">分数代表倾向强弱，不代表好坏。</div>
+  <div id="details"></div>
+
+  <div class="profile">
+    <h3 id="profileTitle"></h3>
+    <p id="profileText"></p>
+    <div class="tags" id="tags"></div>
+  </div>
+
+  <div class="insight" id="insight"></div>
+
+  <div class="share">
+    <div class="share-title">✨ 完整结果免费开放</div>
+    <div class="share-text">看看你到底是恋爱脑、冰山型、疯批型，还是那种最难搞的反差型。</div>
+    <div class="actions">
+      <button id="shareBtn">分享结果</button>
+      <button id="restartBtn">重新测试</button>
+    </div>
+  </div>
+  <div class="foot">趣味人格测试，仅用于娱乐与自我探索。人格类型为测试中的趣味命名，不代表心理或医学诊断。</div>
+</div>
+</section>
+</div>
+
+<script>
+const dims=[
+ {n:"主动追爱",d:"你把喜欢变成行动、制造见面和推进关系的倾向。"},
+ {n:"依恋需求",d:"你对陪伴、回应、确认感和亲密连接的需求。"},
+ {n:"占有欲",d:"你希望自己在关系里拥有特殊位置的程度。"},
+ {n:"嫉妒敏感",d:"你对第三者、回复变化和关系竞争信号的敏感度。"},
+ {n:"情绪浓度",d:"恋爱中情绪起伏、上头速度和投入强度。"},
+ {n:"恋爱脑",d:"你是否容易把大量时间、注意力和幻想放进爱情。"},
+ {n:"掌控欲",d:"你想决定关系节奏、沟通方式和相处规则的程度。"},
+ {n:"边界感",d:"你在亲密关系里保留自我、原则和独立空间的能力。"},
+ {n:"反差感",d:"你的外在表现与恋爱后的真实状态之间的差异。"},
+ {n:"神秘感",d:"你是否习惯保留情绪、慢慢打开自己。"},
+ {n:"被爱需求",d:"你多需要被偏爱、肯定、重视和坚定选择。"},
+ {n:"刺激偏好",d:"你对暧昧、拉扯、新鲜感和戏剧性的偏好。"},
+ {n:"共情能力",d:"你捕捉对象情绪、读空气和理解细节的倾向。"},
+ {n:"自由程度",d:"你在恋爱中保持自己生活节奏、不过度黏住的倾向。"}
+];
+
+const qs=[
+{t:"s",q:"喜欢一个人时，我会主动创造单独相处的机会。",w:{0:1,5:.25}},
+{t:"s",q:"对方如果一天没怎么找我，我会明显感觉不对劲。",w:{1:1,3:.65,5:.55}},
+{t:"s",q:"当我喜欢一个人，我会忍不住想知道 TA 在干什么。",w:{2:1,3:.75,5:.55}},
+{t:"s",q:"我会为了恋爱调整自己的计划，哪怕有一点麻烦。",w:{5:1,1:.6,13:-.35}},
+{t:"s",q:"恋爱里的小细节，会影响我一整天的情绪。",w:{4:1,5:.8,3:.5}},
+{t:"s",q:"我喜欢把关系的节奏掌握在自己手里。",w:{6:1,0:.4}},
+{t:"s",q:"即使非常喜欢，我也希望保留自己的生活。",w:{13:1,7:.7,5:-.2}},
+{t:"s",q:"我容易因为一句暧昧的话，开始脑补很多剧情。",w:{5:1,4:.8,11:.5}},
+{t:"s",q:"我表面看起来很淡定，谈恋爱后其实会变得很黏。",w:{8:1,1:.9,5:.55}},
+{t:"s",q:"我不太喜欢把自己的真实情绪一次全部说出来。",w:{9:1,7:.35,8:.4}},
+{t:"s",q:"如果对象和别人走得很近，我很难完全不在意。",w:{3:1,2:.85,4:.45}},
+{t:"s",q:"我希望对方能明确表达：‘我最偏爱你。’",w:{10:1,2:.65,1:.45}},
+{t:"s",q:"我喜欢恋爱中有一点点暧昧、拉扯和不确定。",w:{11:1,9:.3,4:.55}},
+{t:"s",q:"我会默默记住对象说过的很多小事。",w:{12:1,1:.45,10:.35}},
+{t:"s",q:"我希望吵架后能尽快把问题解决，不喜欢一直冷着。",w:{0:.35,1:.55,7:1,13:.3}},
+{t:"s",q:"如果关系不确定，我会比平时更想确认答案。",w:{1:.8,3:.9,5:.55}},
+{t:"s",q:"我喜欢对方主动安排约会，而不是每次都让我决定。",w:{0:.65,6:-.2,1:.35}},
+{t:"s",q:"我会在恋爱里偷偷观察自己是不是变得不像自己。",w:{7:.7,9:.4,8:.8}},
+{t:"s",q:"比起稳定，我更容易被有火花、有戏剧性的人吸引。",w:{11:1,4:.85}},
+{t:"s",q:"我很容易对一个人产生‘只有 TA 懂我’的感觉。",w:{10:.75,12:1,1:.6}},
+{t:"s",q:"即使失恋，我也会很久才真正放下。",w:{5:1,4:.7,1:.75}},
+{t:"s",q:"我不喜欢对象什么都要管我。",w:{7:1,13:.8,6:-.3}},
+{t:"s",q:"我会故意保持一点神秘感，让对方慢慢了解我。",w:{9:1,8:.35}},
+{t:"s",q:"被追、被哄、被坚定选择，会让我非常上头。",w:{10:1,1:.9,5:.65}},
+{t:"s",q:"我喜欢自己在关系里有一点不可预测。",w:{8:1,11:.7,9:.4}},
+{t:"c",q:"如果喜欢的人突然冷淡，你最可能：",o:[
+ ["A 直接问清楚","我宁愿知道答案，也不想一直猜。",{0:.55,7:.7,1:.55}],
+ ["B 开始疯狂复盘","我会想是不是自己做错了什么。",{5:.8,3:1,4:.75}],
+ ["C 假装不在乎","越在乎，我越想维持体面。",{8:1,9:.65,7:.55}],
+ ["D 转身去做自己的事","他冷他的，我先过我的生活。",{13:1,7:.75,5:-.2}]
+ ,
+    ["E 继续观察，等对方自己解释","我不想显得太着急，但会留意后续。",{9:0.55,13:0.45,3:0.35}],
+    ["F 发一条轻松消息试探","先把气氛拉回来，再看对方反应。",{0:0.45,6:0.55,12:0.35}],
+    ["G 先把自己哄好，再决定要不要问","我的情绪很重要，但我不想被它牵着走。",{7:0.75,13:0.7,4:0.4}],
+    ["H 直接把注意力转移到别的事情","既然对方冷，我也不会一直耗着。",{13:1,7:0.65,5:-0.25}],
+]},
+{t:"c",q:"你发现对象点赞了陌生人的暧昧内容，第一反应更像：",o:[
+ ["A 先观察，不马上质问",{9:.65,7:.65,13:.45}],
+ ["B 有点酸，忍不住想更多",{3:1,2:.8,5:.5}],
+ ["C 直接问 TA 到底什么意思",{0:.85,6:.6,7:.55}],
+ ["D 表面没事，晚上想很久",{8:.8,4:.9,5:.65}]
+,
+    ["E 默默记下来，之后再看","我不会马上发作，但这件事我会记住。",{9:0.7,3:0.65,7:0.4}],
+    ["F 半开玩笑地问一句","用玩笑试探，比直接质问舒服。",{11:0.55,0:0.35,8:0.55}],
+    ["G 我会马上看对方最近是不是也有别的异常","我要的是完整信息，不想只看一个点赞。",{12:0.8,3:0.65,7:0.55}],
+    ["H 完全不管，点赞不代表什么","除非影响到现实关系，否则我不想内耗。",{13:0.9,7:0.85,3:-0.2}],
+]},
+{t:"c",q:"朋友说你恋爱后最明显的变化是：",o:[
+ ["A 更主动，也更会安排",{0:1,6:.75}],
+ ["B 更黏、更爱吃醋",{1:1,2:.8,3:.85}],
+ ["C 外面很冷，私下很疯",{8:1,4:.8,11:.55}],
+ ["D 反而更松弛，不太黏人",{13:1,7:.7}]
+,
+    ["E 变得特别爱分享日常","什么小事都想告诉对方。",{1:1,5:0.7,12:0.35}],
+    ["F 变得更有占有欲","平时无所谓，恋爱后会明显在意。",{2:1,3:0.85}],
+    ["G 突然很会撒娇","反差会把自己都吓一跳。",{8:1,1:0.75,4:0.5}],
+    ["H 变得更理性、更会设边界","越认真越不想失去自己。",{7:1,13:0.8,9:0.35}],
+]},
+{t:"c",q:"如果你真的特别喜欢一个人，你最容易做哪件事？",o:[
+ ["A 主动制造机会",{0:1,6:.65}],
+ ["B 把对方的细节全部记住",{12:1,10:.45}],
+ ["C 开始幻想两个人的未来",{5:1,4:.65}],
+ ["D 故意保持一点距离",{9:1,13:.55,7:.45}]
+,
+    ["E 偷偷看很多次聊天记录","我会回味细节，寻找当时的感觉。",{5:0.85,4:0.7,9:0.45}],
+    ["F 想办法进入对方的生活圈","我希望关系自然发生，而不是只停留在聊天。",{0:0.75,6:0.9,12:0.4}],
+    ["G 故意逗对方，看 TA 对我有没有感觉","我喜欢通过互动确认吸引力。",{11:1,8:0.6,6:0.55}],
+    ["H 先把自己的生活过好，不急着表白","真正合适的关系不需要我追着跑。",{13:1,7:0.7,9:0.5}],
+]},
+{t:"c",q:"你最怕恋爱变成什么样？",o:[
+ ["A 只有我一个人在努力",{0:.4,1:1,10:.8}],
+ ["B 对方越来越不在乎我",{1:1,3:.8,10:.9}],
+ ["C 每天都一样，完全没火花",{11:1,4:.8}],
+ ["D 失去自己的生活和边界",{13:1,7:1}]
+,
+    ["E 只有习惯，没有心动","稳定是好事，但我怕关系只剩惯性。",{11:0.9,4:1}],
+    ["F 我越来越不像自己","我最怕为了爱放掉原则和节奏。",{7:1,13:0.8,5:0.25}],
+    ["G 对方什么都瞒着我","信息不透明会让我很没有安全感。",{3:1,12:0.7,1:0.55}],
+    ["H 两个人都很爱，但互相不表达","我怕明明在乎，却一直错过。",{10:0.9,12:0.8,1:0.65}],
+]},
+{t:"c",q:"你觉得最让人上头的一句话是哪句？",o:[
+ ["A ‘我来接你。’",{0:1,10:.35}],
+ ["B ‘我只对你这样。’",{10:1,2:.85,1:.65}],
+ ["C ‘我忍很久了。’",{11:1,4:1,8:.4}],
+ ["D ‘你去忙，我等你。’",{13:.8,7:.9,1:.55}]
+,
+    ["E ‘我见到你就开心。’","直接的快乐很有感染力。",{4:0.75,1:0.6,10:0.45}],
+    ["F ‘你不用懂我，我来懂你。’","被理解本身就是一种安全感。",{12:1,1:0.7}],
+    ["G ‘别人怎样都无所谓，我先选你。’","偏爱会让我瞬间破防。",{10:1,2:0.8,5:0.55}],
+    ["H ‘你慢慢来，我不会逼你。’","尊重和空间会让我更愿意靠近。",{7:1,13:0.9,9:0.45}],
+]},
+{t:"c",q:"吵架的时候，你更像：",o:[
+ ["A 一定要马上说清楚",{0:.9,7:.8}],
+ ["B 嘴硬，心里其实很怕失去",{8:.9,1:.85,4:.6}],
+ ["C 越生气越想知道对方在不在乎",{3:.9,10:.8,4:.85}],
+ ["D 先冷静，自己消化完再说",{13:.8,7:.85,9:.5}]
+,
+    ["E 明明很生气，却还想确认对方在不在","嘴上硬，心里舍不得。",{1:0.9,3:0.8,4:0.65}],
+    ["F 会忍不住讲很多道理","我想把问题拆开，让它变得可解决。",{6:0.75,0:0.55,7:0.7}],
+    ["G 先走开，等自己平静","我需要一点空间，才能继续沟通。",{13:0.85,7:0.85,9:0.45}],
+    ["H 会故意说重话测试对方","我可能会用极端一点的方式确认在不在乎。",{3:0.75,4:1,8:0.55}],
+]},
+{t:"c",q:"如果一段关系非常顺利，你反而最容易开始想：",o:[
+ ["A 下一步怎么更进一步",{0:.9,10:.45}],
+ ["B 终于可以放心依赖 TA 了",{1:1,5:.8}],
+ ["C 会不会开始变无聊",{11:1,4:.65}],
+ ["D 这样就挺好，不用折腾",{13:1,7:.6}]
+,
+    ["E 我们是不是可以更进一步了","我会开始想未来和更稳定的安排。",{10:0.8,1:0.75,0:0.45}],
+    ["F TA会不会哪天突然变了","越幸福，越怕失去。",{3:0.8,1:0.8,5:0.7}],
+    ["G 我好像又想要一点新鲜感","顺利很好，但太平可能会让我发闷。",{11:1,4:0.7}],
+    ["H 就这样保持下去就很好","我会珍惜已经有的，不想瞎折腾。",{13:0.9,7:0.75,11:-0.2}],
+]},
+{t:"c",q:"你最容易被哪种恋爱氛围击中？",o:[
+ ["A 明确、直接、行动派",{0:1,6:.7}],
+ ["B 黏人、偏爱、专一",{1:1,10:.9,2:.65}],
+ ["C 危险、暧昧、拉扯",{11:1,4:.9,9:.35}],
+ ["D 松弛、自然、互相尊重",{13:1,7:.9}]
+,
+    ["E 被一个人坚定偏爱","我喜欢那种很明确的‘就是你’。",{10:1,2:0.65,1:0.75}],
+    ["F 互相试探、慢慢靠近","一点点升温会让我更投入。",{9:0.8,11:0.75,4:0.55}],
+    ["G 一见钟情、迅速升温","浓度越高，我越容易心动。",{4:1,5:0.75,0:0.45}],
+    ["H 彼此独立，但默契很强","不用一直黏在一起，也知道对方在。",{13:1,7:0.8,12:0.65}],
+]},
+{t:"c",q:"如果朋友吐槽你‘怎么又恋爱脑了’，你最可能：",o:[
+ ["A 嘴上反驳，心里其实有点爽",{5:1,4:.65,8:.45}],
+ ["B ‘这次不一样。’",{10:.95,5:.85}],
+ ["C ‘谁说我恋爱脑，我只是认真。’",{7:.6,9:.5,0:.45}],
+ ["D ‘我谈恋爱，但我还是我。’",{13:1,7:.8}]
+,
+    ["E ‘你懂什么，这次真的不一样。’","我会非常坚定地站在这段感情里。",{5:1,10:0.7}],
+    ["F ‘我只是投入，不代表我没脑子。’","我认可自己认真，但我也想保留判断。",{7:0.75,5:0.8,13:0.4}],
+    ["G ‘谈恋爱不就是要开心吗？’","我更看重感觉和当下。",{4:1,11:0.85}],
+    ["H 笑笑不解释","没必要证明什么，自己知道就好。",{9:0.65,13:0.8,8:0.55}],
+]}
+];
+
+const types=[
+{name:"恋爱脑·上头型",w:{5:1.35,4:.9,1:1.0,10:.55},text:"你谈恋爱不是‘喜欢一点’，而是很容易整个人亮起来。你会把大量注意力、幻想和情绪放进关系里。一旦确认心意，很容易开始自动脑补未来、记住细节、反复回味聊天记录。",tags:["高投入","高幻想","上头快","长尾型"]},
+{name:"冰山·嘴硬型",w:{9:1.15,8:1.0,7:.8,10:.45,1:.15},text:"你的恋爱人格最明显的特征是‘表面很稳，里面很热’。越在乎越容易装淡定，不愿意让别人轻易看出你的底牌。你真正的危险点，是嘴上说没事，心里已经演了八百集。",tags:["嘴硬","慢热","反差","高防御"]},
+{name:"疯批·高浓度型",w:{2:1.05,3:.9,4:1.25,11:1.05,5:.75},text:"这里的‘疯批’是娱乐标签，指你在亲密关系里容易追求高浓度、高刺激和强烈确定感。平淡不是你的问题，真正的问题是：你很容易把‘很爱’和‘很有感觉’绑定在一起。",tags:["高浓度","情绪烈度","吃醋","刺激"]},
+{name:"掌控·主导型",w:{0:1.3,6:1.15,7:.35,10:.4},text:"你不喜欢关系悬着。你更习惯主动决定下一步、安排见面、解决问题。你并不一定强势，但你会天然进入‘那我来处理’的模式。",tags:["执行力","主导感","行动派","确定性"]},
+{name:"钓系·暧昧型",w:{11:1.3,9:.75,8:.7,0:.45},text:"你很会让关系停留在‘差一点更近’的位置。你不一定喜欢故意吊人胃口，但你很懂得保留一点空间、留一点想象、留一点没说完的话。",tags:["会撩","留白","拉扯","后劲"]},
+{name:"讨好·照顾型",w:{1:1.05,12:1.15,10:.6,7:.55,0:.25},text:"你很容易把爱表现成照顾。你会记细节、察觉情绪、帮对方补缺口。你的危险点在于：你很容易先照顾别人，最后才发现自己也需要被照顾。",tags:["共情","照顾欲","细节控","高回应"]},
+{name:"自由·逃生型",w:{13:1.35,7:1.0,9:.5,5:-.15,1:-.1},text:"你可以很爱一个人，但不喜欢把自己整个交出去。你需要亲密，也需要空气。你真正舒服的关系，是‘我们很爱，但两个人还是各自完整’。",tags:["独立","边界","松弛","不黏"]},
+{name:"纯爱·偏执型",w:{10:1.15,2:1.0,1:.95,7:.35},text:"你要的不是很多人喜欢你，而是一个人坚定地选你。唯一感、偏爱和长期感会让你非常有安全感。你最容易被‘我只认你’这种表达击中。",tags:["唯一感","专一","偏爱","长期主义"]},
+{name:"反差·双面型",w:{8:1.35,11:.8,5:.65,9:.45},text:"你在恋爱前后可能是两个版本。平时可以很理性、很独立，真正喜欢以后却会突然变黏、幼稚、占有欲上升。你的魅力来自‘没想到你会这样’。",tags:["反差","双面","隐藏属性","突然失控"]},
+{name:"高冷·回避型",w:{9:1.25,13:1.0,7:.85,1:-.15,5:-.1},text:"你不是不需要爱，只是你不喜欢被爱得太紧。你倾向于先观察、慢慢靠近、确认安全以后再打开。你真正需要的是稳定，但不能没有空间。",tags:["慢热","观察","空间感","低压"]},
+{name:"戏精·情绪型",w:{4:1.2,11:1.0,3:.65,8:.55},text:"你的恋爱世界很有戏。开心会放大，委屈会放大，暧昧也会放大。你并不一定喜欢矛盾，而是你需要‘这段关系真的有感觉’。",tags:["情绪浓度","戏剧性","代入感","高反馈"]}
+];
+
+function el(id){return document.getElementById(id)}
+function safe(n,d=0){const x=Number(n);return Number.isFinite(x)?x:d}
+function clamp(n){return Math.max(0,Math.min(100,safe(n,0)))}
+let idx=0;
+const answers=Array(qs.length).fill(null);
+
+function renderQuestion(){
+  const q=qs[idx];
+  el("metaQ").textContent=`QUESTION ${idx+1}`;
+  el("metaN").textContent=`${idx+1} / ${qs.length}`;
+  el("progressFill").style.width=`${((idx+1)/qs.length)*100}%`;
+  el("question").textContent=q.q;
+  el("prevBtn").disabled=idx===0;
+  el("topBack").classList.toggle("hidden",idx===0);
+  el("nextBtn").disabled=answers[idx]===null;
+  const area=el("answerArea");area.innerHTML="";
+  if(q.t==="s"){
+    const wrap=document.createElement("div");wrap.className="scale";
+    const line=document.createElement("div");line.className="scale-line";wrap.appendChild(line);
+    const pts=document.createElement("div");pts.className="points";
+    for(let i=1;i<=5;i++){
+      const b=document.createElement("button");b.className="point"+(i===3?" mid":"");
+      if(answers[idx]===i)b.classList.add("active");
+      b.onclick=()=>{answers[idx]=i;[...pts.children].forEach(x=>x.classList.remove("active"));b.classList.add("active");el("nextBtn").disabled=false};
+      pts.appendChild(b);
+    }
+    wrap.appendChild(pts);
+    const labs=document.createElement("div");labs.className="scale-labels";labs.innerHTML="<span>完全不像我</span><strong>非常像我</strong>";wrap.appendChild(labs);
+    area.appendChild(wrap);
+  }else{
+    const grid=document.createElement("div");grid.className="choices";
+    const choiceNo = qs.slice(0, idx+1).filter(x=>x.t==="c").length-1;
+    q.o.forEach((o,i)=>{
+      const b=document.createElement("button");b.className="choice";
+      if(answers[idx]===i)b.classList.add("active");
+      const desc = typeof o[1]==="string"
+        ? o[1]
+        : ((legacyChoiceDescriptions[choiceNo] && legacyChoiceDescriptions[choiceNo][i]) || "这个选项反映了你在恋爱中的一种典型反应。");
+      b.innerHTML=`<div class="lead">${o[0]}</div><div class="desc">${desc}</div>`;
+      b.onclick=()=>{
+        answers[idx]=i;
+        [...grid.children].forEach(x=>x.classList.remove("active"));
+        b.classList.add("active");
+        el("nextBtn").disabled=false
+      };
+      grid.appendChild(b);
+    });
+    area.appendChild(grid);
+  }
+}
+
+
+const legacyChoiceDescriptions = [
+  [
+    "我想先确认事实，不急着下结论。",
+    "我会在意，而且很容易开始脑补。",
+    "不喜欢猜，我想把话说清楚。",
+    "我会装得很稳，但心里会翻来覆去。",
+    "我不会马上发作，但这件事我会记住。",
+    "用玩笑试探，比直接质问舒服。",
+    "我要的是完整信息，不想只看一个点赞。",
+    "除非影响现实关系，否则我不想内耗。"
+  ],
+  [
+    "喜欢了就会把关系往前推。",
+    "平时无所谓，恋爱后会明显在意。",
+    "越喜欢越容易暴露隐藏属性。",
+    "越认真越希望保留自己的节奏。",
+    "什么小事都想告诉对方。",
+    "恋爱后会更想确认自己在对方心里的位置。",
+    "反差会把自己都吓一跳。",
+    "越认真越不想失去自己。"
+  ],
+  [
+    "我会找理由见面，也会直接推进。",
+    "我会把很多小事默默记下来。",
+    "我很容易自动脑补后面的故事。",
+    "我不想一下子暴露全部底牌。",
+    "我会回味细节，寻找当时的感觉。",
+    "我希望关系发生在真实生活里。",
+    "我喜欢通过互动确认吸引力。",
+    "真正合适的关系不需要我追着跑。"
+  ],
+  [
+    "我怕最后变成单方面投入。",
+    "最难接受的是被慢慢放下。",
+    "稳定很好，但我也需要感觉。",
+    "我最怕为了爱把自己弄丢。",
+    "我怕关系只剩惯性，没有期待。",
+    "我最怕为了爱放掉原则和节奏。",
+    "信息不透明会让我没有安全感。",
+    "明明在乎，却一直错过最让人难受。"
+  ],
+  [
+    "直接的行动最容易让我心动。",
+    "我很吃特殊待遇。",
+    "压抑后的爆发会让我上头。",
+    "给空间又给确定感。",
+    "简单直接的快乐很有感染力。",
+    "被理解本身就是一种安全感。",
+    "偏爱会让我瞬间破防。",
+    "尊重和空间会让我更愿意靠近。"
+  ],
+  [
+    "问题不解决，我很难安心。",
+    "越在乎越容易装不在乎。",
+    "我很需要被确认。",
+    "我需要一点空间才能继续沟通。",
+    "嘴上硬，心里其实舍不得。",
+    "我想把问题拆开，让它变得可解决。",
+    "我不想在情绪最高点说重话。",
+    "我可能会用极端一点的方式确认在不在乎。"
+  ],
+  [
+    "我会开始想未来和更稳定的安排。",
+    "稳定会让我更愿意打开自己。",
+    "太平了会让我担心失去火花。",
+    "舒服稳定本身就很珍贵。",
+    "我会开始想未来和更稳定的安排。",
+    "越幸福，有时越怕失去。",
+    "顺利很好，但太平可能让我发闷。",
+    "我会珍惜已经有的，不想瞎折腾。"
+  ],
+  [
+    "喜欢就是喜欢，不拖。",
+    "我喜欢明显的特殊感。",
+    "有一点失控才有记忆点。",
+    "舒服、自由、但彼此在乎。",
+    "我喜欢那种很明确的‘就是你’。",
+    "一点点升温会让我更投入。",
+    "浓度越高，我越容易心动。",
+    "不用一直黏在一起，也知道对方在。"
+  ],
+  [
+    "我会嘴上否认，但其实很投入。",
+    "我会非常坚定地站在这段感情里。",
+    "我认可自己投入，但也想保留判断。",
+    "爱情不会吞掉我的生活。",
+    "我会非常认真地相信这段关系。",
+    "认真和失去判断力是两回事。",
+    "我更看重感觉和当下。",
+    "没必要证明什么，自己知道就好。"
+  ]
+];
+
+function computeDims(){
+  const sums=Array(dims.length).fill(0),ws=Array(dims.length).fill(0);
+  qs.forEach((q,i)=>{
+    const a=answers[i];if(a===null||a===undefined)return;
+    if(q.t==="s"){
+      const x=(safe(a)-1)/4;
+      for(const d of Object.keys(q.w||{})){
+        const di=Number(d),ww=safe(q.w[d]);
+        if(di>=0&&di<14&&Number.isFinite(ww)){sums[di]+=x*ww;ws[di]+=Math.abs(ww)}
+      }
+    }else{
+      const raw=q.o?.[a]||[]; const vec=(raw[2] && typeof raw[2]==="object") ? raw[2] : ((raw[1] && typeof raw[1]==="object") ? raw[1] : {});
+      for(const d of Object.keys(vec)){
+        const di=Number(d),ww=safe(vec[d]);
+        if(di>=0&&di<14&&Number.isFinite(ww)){sums[di]+=ww;ws[di]+=1}
+      }
+    }
+  });
+  return sums.map((v,i)=>ws[i]>0?Math.round(clamp((v/ws[i])*100)):0);
+}
+
+function typeScore(s,w){
+  let a=0,b=0;
+  for(const k of Object.keys(w)){const ww=safe(w[k]);if(!ww)continue;a+=safe(s[Number(k)])*ww;b+=Math.abs(ww)}
+  return b?Math.round(clamp(a/b)):0;
+}
+
+function note(i,v){
+  const hi=[
+    "你会更容易把喜欢变成行动。",
+    "你需要比较高频的回应与陪伴。",
+    "你在关系里很看重特殊位置。",
+    "关系中的细节变化会明显影响你。",
+    "你更容易被高浓度关系点燃。",
+    "一旦认真，你很容易把大量注意力放进去。",
+    "你更喜欢关系有方向、有推进。",
+    "你即使很爱，也希望保留自己的原则和空间。",
+    "恋爱会明显激活你的隐藏面。",
+    "你更习惯慢慢打开，不会一次交出全部自己。",
+    "被偏爱、被坚定选择会明显提升你的幸福感。",
+    "你需要一点火花和变化，才不会觉得关系无聊。",
+    "你很会读取对象的情绪细节。",
+    "你通常不希望爱情吞掉你的整个生活。"
+  ];
+  const mid="这一维度比较中性，通常会随着对象和关系阶段变化。";
+  return v>=65?hi[i]:mid;
+}
+
+function drawRadar(s){
+  const svg=el("radar");svg.innerHTML="";
+  const cx=320,cy=320,R=220,n=s.length;
+  const pts=r=>s.map((_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*R*r,cy+Math.sin(a)*R*r]});
+  for(const r of [.2,.4,.6,.8,1]){
+    const poly=document.createElementNS("http://www.w3.org/2000/svg","polygon");
+    poly.setAttribute("points",pts(r).map(p=>p.join(",")).join(" "));poly.setAttribute("class","r-grid");svg.appendChild(poly);
+  }
+  pts(1).forEach(p=>{
+    const line=document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1",cx);line.setAttribute("y1",cy);line.setAttribute("x2",p[0]);line.setAttribute("y2",p[1]);line.setAttribute("class","r-axis");svg.appendChild(line);
+  });
+  const data=s.map((v,i)=>{const a=-Math.PI/2+i*2*Math.PI/n,r=R*clamp(v)/100;return [cx+Math.cos(a)*r,cy+Math.sin(a)*r]});
+  const area=document.createElementNS("http://www.w3.org/2000/svg","polygon");
+  area.setAttribute("points",data.map(p=>p.join(",")).join(" "));area.setAttribute("class","r-area");svg.appendChild(area);
+  pts(1.18).forEach((p,i)=>{
+    const anchor=p[0]<cx-20?"end":p[0]>cx+20?"start":"middle";
+    const t=document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.setAttribute("x",p[0]);t.setAttribute("y",p[1]);t.setAttribute("text-anchor",anchor);t.setAttribute("dominant-baseline","middle");t.setAttribute("class","r-label");t.textContent=dims[i].n;svg.appendChild(t);
+    const v=document.createElementNS("http://www.w3.org/2000/svg","text");
+    v.setAttribute("x",p[0]);v.setAttribute("y",p[1]+17);v.setAttribute("text-anchor",anchor);v.setAttribute("class","r-value");v.textContent=s[i];svg.appendChild(v);
+  });
+}
+
+function showResults(){
+  const s=computeDims();
+  const ranked=types.map((t,i)=>({i,v:typeScore(s,t.w)})).sort((a,b)=>b.v-a.v);
+  const main=ranked[0],second=ranked[1];
+  el("mainType").textContent=types[main.i].name;
+  el("mainScore").textContent=`${main.v}分`;
+  el("secondType").textContent=types[second.i].name;
+  el("secondScore").textContent=`${second.v}分`;
+  el("typeGap").textContent=`核心人格与隐藏副人格的差异：${Math.abs(main.v-second.v)} 分`;
+
+  drawRadar(s);
+
+  const top=s.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v).slice(0,3);
+  el("top3").innerHTML=top.map((x,j)=>`<div class="item"><span>TOP ${j+1}</span><b>${dims[x.i].n}</b><em>${x.v}分</em></div>`).join("");
+
+  el("details").innerHTML=s.map((v,i)=>`
+    <div class="detail">
+      <div class="d-head"><h3>${dims[i].n}</h3><div class="d-score">${v}</div></div>
+      <div class="d-bar"><i style="width:${v}%"></i></div>
+      <p><strong style="color:#e8dde1">${v>=75?"很高":v>=55?"偏高":v>=40?"中等":"偏低"}</strong> · ${dims[i].d} ${note(i,v)}</p>
+    </div>
+  `).join("");
+
+  el("profileTitle").textContent=`${types[main.i].name} · 核心画像`;
+  el("profileText").textContent=types[main.i].text;
+  el("tags").innerHTML=types[main.i].tags.map(x=>`<span class="tag">${x}</span>`).join("");
+
+  const loveSpeed=s[0]>=70?"行动型：喜欢就会靠近":s[5]>=70?"上头型：情绪先行":"观察型：先确认再投入";
+  const conflict=s[7]>=70?"边界优先：吵架也要保留空间":s[0]>=70?"解决优先：问题最好马上说清楚":"情绪优先：先处理感受再处理问题";
+  const hidden=s[8]>=70?"反差很大：恋爱后容易暴露另一个自己":s[9]>=70?"防御感较强：你不会一次交出全部":"相对直接：喜欢与不喜欢比较容易被看出来";
+  const fatal=s[11]>=70?"刺激感":s[10]>=70?"被偏爱":s[5]>=70?"情绪投入":s[13]>=70?"自由空间":"确定感";
+
+  el("insight").innerHTML=[
+    ["你的恋爱节奏",loveSpeed],
+    ["吵架模式",conflict],
+    ["隐藏属性",hidden],
+    ["最容易上头的点",fatal],
+    ["一句话总结",`你不是不会恋爱，你只是会用自己的方式把关系变得很有戏。核心人格是「${types[main.i].name}」，但真正决定你恋爱风格的，是 ${dims[s.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v)[0].i].n}。`]
+  ].map(r=>`<div class="insight-row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join("");
+
+  el("quizView").classList.add("hidden");
+  el("resultView").classList.remove("hidden");
+  el("topBack").classList.add("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+el("nextBtn").onclick=()=>{
+  if(answers[idx]===null)return;
+  if(idx<qs.length-1){idx++;renderQuestion();window.scrollTo({top:0,behavior:"smooth"})}
+  else showResults();
+};
+el("prevBtn").onclick=()=>{
+  if(idx>0){idx--;renderQuestion();window.scrollTo({top:0,behavior:"smooth"})}
+};
+el("topBack").onclick=()=>{
+  if(idx>0){idx--;renderQuestion();window.scrollTo({top:0,behavior:"smooth"})}
+};
+el("restartBtn").onclick=()=>location.reload();
+el("shareBtn").onclick=async()=>{
+  const txt=`我的恋爱人格是「${el("mainType").textContent}」｜你是什么类型？`;
+  if(navigator.share){
+    try{await navigator.share({title:"你的恋爱人格是什么？",text:txt,url:location.href})}catch(e){}
+  }else{
+    try{await navigator.clipboard.writeText(txt+" "+location.href);alert("结果文案已复制")}
+    catch(e){alert(txt)}
+  }
+};
+renderQuestion();
+</script>
+</body>
+</html>
